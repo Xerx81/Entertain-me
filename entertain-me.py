@@ -1,6 +1,6 @@
+import discord
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import quote
 
 headers = {"User-Agent": "Mozilla/5.0"}
 
@@ -26,8 +26,7 @@ def scrape_imdb_top_5():
   return titles
 
 
-def scrape_imdb_top_5_by_title():
-  title = quote(input("Search by title: "))
+def scrape_imdb_top_5_by_title(title):
   url = f"https://www.imdb.com/search/title/?title={title}"
 
   response = requests.get(url, headers=headers)
@@ -63,8 +62,36 @@ def scrape_imdb_top_5_by_title():
   
   
 if __name__ == "__main__":
-  # scrape_imdb_top_5()
-  movies = scrape_imdb_top_5_by_title()
-  for movie in movies:
-    print(f"\n{movie['title']}\n{movie['year']}  ⭐ {movie['rating']}\n\n")
+
+  intents = discord.Intents.default()
+  intents.message_content = True
+
+  client = discord.Client(intents=intents)
+
+  @client.event
+  async def on_ready():
+    print(f'We have logged in as {client.user}')
+
+  @client.event
+  async def on_message(message):
+    if message.author == client.user:
+      return
+
+    if message.content.startswith('.title'):
+
+      title = ' '.join(message.content.split()[1:])
+      movies = scrape_imdb_top_5_by_title(title)
+
+      movie_msg = ""
+      for movie in movies:
+        movie_msg += f"{movie['title']}\n{movie['year']}  ⭐{movie['rating']}\n\n"
+      
+      if movie_msg:
+        await message.channel.send(f"```{movie_msg}```")
+      else:
+        await message.channel.send(f"```No Results! Try again.```")
+
+
+  client.run('MTI3MTM1NzMwNTIyMDIzOTM3MA.G_EP_p.HZDUrzASnUTtLDUvlaPlw-wSHAP0u0nnMhrnmc')
+
 
