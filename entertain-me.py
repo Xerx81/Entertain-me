@@ -92,6 +92,5 @@ if __name__ == "__main__":
         await message.channel.send(f"```No Results! Try again.```")
 
 
-  client.run('MTI3MTM1NzMwNTIyMDIzOTM3MA.G_EP_p.HZDUrzASnUTtLDUvlaPlw-wSHAP0u0nnMhrnmc')
-
+client.run("add token here")
 
