@@ -1,6 +1,10 @@
 import discord
+import os
 import requests
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+
+load_dotenv()
 
 headers = {"User-Agent": "Mozilla/5.0"}
 
@@ -92,5 +96,5 @@ if __name__ == "__main__":
         await message.channel.send(f"```No Results! Try again.```")
 
 
-client.run("add token here")
+client.run(os.getenv('TOKEN'))
 
