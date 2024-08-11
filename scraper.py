@@ -52,7 +52,6 @@ class Scraper:
     
     def get_top_movies(self, url):
         soup = self.get_soup(url)
-        list_tag = ("li", {"class": "ipc-metadata-list-summary-item sc-10233bc-0 TwzGn cli-parent"})
         year_tag = ("span", {"class": "sc-b189961a-8 hCbzGp cli-title-metadata-item"})
 
         movies = self.scrape(soup, self.common_list_tag, self.common_title_tag, self.common_rating_tag, year_tag)
@@ -65,15 +64,3 @@ class Scraper:
         movies = self.scrape(soup, self.common_list_tag, self.common_title_tag, self.common_rating_tag, self.common_year_tag)
         movie_msg = self.dict_to_string(movies)
         return movie_msg
-    
-    def get_by_release(self, url):
-        soup = self.get_soup(url)
-
-        movies = self.scrape(soup, self.common_list_tag, self.common_title_tag, self.common_rating_tag, self.common_year_tag)
-        return
-    
-    def get_by_type(self, url):
-        return
-    
-
-    
