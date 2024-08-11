@@ -44,3 +44,4 @@ Please follow the standard code style and formatting guidelines.
 
 **Screenshots:**
 
+![iMDb-bot-ss](https://github.com/user-attachments/assets/a4528684-c3a5-4fd5-a35d-e1f9bff3ee5d)
