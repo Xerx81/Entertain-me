@@ -59,10 +59,21 @@ class Scraper:
         movie_msg = self.dict_to_string(movies)
         return movie_msg
     
-    def get_by_title(self, url):
+    def advanced_search(self, url):
         soup = self.get_soup(url)
 
         movies = self.scrape(soup, self.common_list_tag, self.common_title_tag, self.common_rating_tag, self.common_year_tag)
         movie_msg = self.dict_to_string(movies)
         return movie_msg
+    
+    def get_by_release(self, url):
+        soup = self.get_soup(url)
+
+        movies = self.scrape(soup, self.common_list_tag, self.common_title_tag, self.common_rating_tag, self.common_year_tag)
+        return
+    
+    def get_by_type(self, url):
+        return
+    
+
     
