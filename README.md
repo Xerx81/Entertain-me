@@ -7,7 +7,7 @@ This Python-based Discord bot fetches movie information from IMDb based on user 
 
 1. Clone the repository:
    ```
-   git clone [invalid URL removed]
+   git clone https://github.com/Xerx81/iMDb-Top5.git
 
 2. Create a virtual enviornment (recommended).
 
