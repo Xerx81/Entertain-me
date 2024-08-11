@@ -35,7 +35,7 @@ This Python-based Discord bot fetches movie information from IMDb based on user 
 
 **Contributions:**
 
-We welcome contributions to improve this project! Here's how you can contribute:
+I welcome contributions to improve this project! Here's how you can contribute:
 
 - Report issues: If you encounter any bugs or unexpected behavior, please open an issue on the GitHub repository.
 - Suggest features: If you have ideas for new features, feel free to open a feature request.
