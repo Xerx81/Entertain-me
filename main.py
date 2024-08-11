@@ -66,4 +66,3 @@ if __name__ == "__main__":
         await message.channel.send(f"```Invalid Command! Use '.help' for a list of commands.```")
 
   client.run(os.getenv('TOKEN'))
-
