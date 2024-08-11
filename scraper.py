@@ -2,12 +2,11 @@ import requests
 from bs4 import BeautifulSoup
 
 class Scraper:
-    def __init__(self):
-        self.headers = {"User-Agent": "Mozilla/5.0"}
-        self.common_list_tag = ("li", {"class": "ipc-metadata-list-summary-item"})
-        self.common_title_tag = ("h3", {"class": "ipc-title__text"})
-        self.common_rating_tag = ("span", {"class": "ipc-rating-star--rating"})
-        self.common_year_tag = ("span", {"class": "sc-b189961a-8 hCbzGp dli-title-metadata-item"})
+    headers = {"User-Agent": "Mozilla/5.0"}
+    common_list_tag = ("li", {"class": "ipc-metadata-list-summary-item"})
+    common_title_tag = ("h3", {"class": "ipc-title__text"})
+    common_rating_tag = ("span", {"class": "ipc-rating-star--rating"})
+    common_year_tag = ("span", {"class": "sc-b189961a-8 hCbzGp dli-title-metadata-item"})
 
     def get_soup(self, url):
         response = requests.get(url, headers=self.headers)
