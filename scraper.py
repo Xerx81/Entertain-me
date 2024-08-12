@@ -7,59 +7,55 @@ class Scraper:
     common_title_tag = ("h3", {"class": "ipc-title__text"})
     common_rating_tag = ("span", {"class": "ipc-rating-star--rating"})
     common_year_tag = ("span", {"class": "sc-b189961a-8 hCbzGp dli-title-metadata-item"})
-
+    
     def get_soup(self, url):
-        response = requests.get(url, headers=self.headers)
-        return BeautifulSoup(response.content, "lxml")
+        try:
+            response = requests.get(url, headers=self.headers, timeout=10) 
+            return BeautifulSoup(response.content, "lxml")
+        except requests.RequestException as e:
+            print(f"Request error: {e}")
+            return None
     
     def scrape(self, soup, list_tag, title_tag, rating_tag, year_tag):
+        if soup is None:
+            return []
+        
         movie_containers = soup.findAll(*list_tag)
-
         movies = []
+        
         for container in movie_containers[:5]:
-            try:
-                title = container.find(*title_tag).text
-            except AttributeError:
-                title = "N/A"
-            try:
-                rating = container.find(*rating_tag).text
-            except AttributeError:
-                rating = "N/A"
-            try:
-                year = container.find(*year_tag).text
-            except AttributeError:
-                year = "N/A"
-
-            movie = {
-            "title": title,
-            "rating": rating,
-            "year": year
-            }
+            movie = {}
+            title = container.find(*title_tag)
+            movie['title'] = title.text if title else "N/A"
+            
+            rating = container.find(*rating_tag)
+            movie['rating'] = rating.text if rating else "N/A"
+            
+            year = container.find(*year_tag)
+            movie['year'] = year.text if year else "N/A"
+            
             movies.append(movie)
+        
         return movies
     
     def dict_to_string(self, movies):
-        movie_msg = ""
-        for movie in movies:
-            movie_msg += f"{movie['title']}\n{movie['year']}  ⭐{movie['rating']}\n\n"
-        
-        if movie_msg:
-            return movie_msg
-        else:
-            print(movie_msg)
+        if not movies:
             return "No Results! Try again."
+        
+        return "\n".join(
+            f"{movie['title']}\n{movie['year']}  ⭐{movie['rating']}\n\n"
+            for movie in movies
+        ).strip()
     
     def get_top_movies(self, url):
         soup = self.get_soup(url)
         year_tag = ("span", {"class": "sc-b189961a-8 hCbzGp cli-title-metadata-item"})
-
+        
         movies = self.scrape(soup, self.common_list_tag, self.common_title_tag, self.common_rating_tag, year_tag)
-        movie_msg = self.dict_to_string(movies)
-        return movie_msg
+        return self.dict_to_string(movies)
     
     def advanced_search(self, url):
         soup = self.get_soup(url)
-
+        
         movies = self.scrape(soup, self.common_list_tag, self.common_title_tag, self.common_rating_tag, self.common_year_tag)
-        movie_msg = self.dict_to_string(movies)
-        return movie_msg
+        return self.dict_to_string(movies)

@@ -79,9 +79,9 @@ if __name__ == "__main__":
   @tree.command(name="release", description="Gives list of top 5 items from given year")
   @app_commands.describe(item_year="The release year to search for")
   async def release(interaction: discord.Interaction, item_year: int):
-      url = f"{urls['release']}{item_year}"  
-      release_msg = scraper.advanced_search(url)
-      await interaction.response.send_message(f"```{release_msg}```")
+    url = f"{urls['release']}{item_year}"
+    release_msg = scraper.advanced_search(url)
+    await interaction.response.send_message(f"```{release_msg}```")
 
 
   @tree.command(name="help", description="Shows list of available commands")
