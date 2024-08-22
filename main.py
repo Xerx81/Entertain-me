@@ -15,85 +15,112 @@ if __name__ == "__main__":
     client = discord.Client(intents=intents)
     tree = app_commands.CommandTree(client)  # Set up a command tree for slash commands
 
-    # Dictionary mapping commands to their corresponding URLs
-    search_commands = {
-        ".topmovies": "https://www.imdb.com/chart/top/",
-        ".movies": "https://www.imdb.com/search/title/?title_type=feature",
-        ".series": "https://www.imdb.com/search/title/?title_type=tv_series",
-        ".games": "https://www.imdb.com/search/title/?title_type=video_game",
-        ".title": "https://www.imdb.com/search/title/?title=",
-        ".release": "https://www.imdb.com/search/title/?release_date=",
+    urls = {
+        "topmovies": "https://www.imdb.com/chart/top/",
+        "movies": "https://www.imdb.com/search/title/?title_type=feature",
+        "series": "https://www.imdb.com/search/title/?title_type=tv_series",
+        "games": "https://www.imdb.com/search/title/?title_type=video_game",
+        "title": "https://www.imdb.com/search/title/?title=",
+        "release": "https://www.imdb.com/search/title/?release_date=",
     }
+
+    scraper = Scraper()
 
     @client.event
     async def on_ready():
-        # Event triggered when the bot has successfully logged in
         print(f'We have logged in as {client.user}')
-
-        # Sync slash commands with Discord
         try:
-            synced = await tree.sync()
+            synced = await tree.sync()  # Sync all commands
             print(f"Synced {len(synced)} command(s)")
         except Exception as e:
             print(e)
 
+
     @tree.command()
     async def hello(interaction: discord.Interaction):
-        # Example slash command that greets the user
         await interaction.response.send_message(f'Hi, {interaction.user.mention}!')
 
-    @client.event
-    async def on_message(message):
 
-        # Ignore messages sent by the bot itself
-        if message.author == client.user:
-            return  
+    @tree.command(name="topmovies", description="Gives list of top 5 movies of all time")
+    async def topmovies(interaction: discord.Interaction):
+        try:
+            await interaction.response.defer(ephemeral=True)
+            url = urls['topmovies']
+            movie_msg = scraper.get_top_movies(url)
+            await interaction.followup.send(f"```{movie_msg}```")
+        except Exception as e:
+            print(e)
 
-        # Extract the command from the message
-        if message.content.startswith('.'):
-            command = message.content.split()[0].lower()  
 
-        if command in search_commands:
-            url = search_commands[command]  # Get the URL associated with the command
-            scraper = Scraper()
+    @tree.command(name="movies", description="Gives list of top 5 currently popular movies")
+    async def movies(interaction: discord.Interaction):
+        try:
+            await interaction.response.defer(ephemeral=True)
+            url = urls['movies']
+            movie_msg = scraper.advanced_search(url)
+            await interaction.followup.send(f"```{movie_msg}```")
+        except Exception as e:
+            print(e)
 
-            # If the command is ".topmovies", show typing indicator and scrape top movies
-            if command == '.topmovies':
-                async with message.channel.typing():
-                    movie_msg = scraper.get_top_movies(url)
-                await message.channel.send(f"```{movie_msg}```")
 
-            # For ".title" and ".release" commands, include the user's input in the URL
-            elif command == '.title' or command == '.release':
-                input = ' '.join(message.content.split()[1:])
-                full_url = f"{url}{input}"
+    @tree.command(name="series", description="Gives list of top 5 currently popular series")
+    async def series(interaction: discord.Interaction):
+        try:
+            await interaction.response.defer(ephemeral=True)
+            url = urls['series']
+            series_msg = scraper.advanced_search(url)
+            await interaction.followup.send(f"```{series_msg}```")
+        except Exception as e:
+            print(e)
 
-                async with message.channel.typing():
-                    movie_msg = scraper.advanced_search(full_url)
-                await message.channel.send(f"```{movie_msg}```")
 
-            # For other commands, perform a general advanced search
-            else:
-                async with message.channel.typing():
-                    movie_msg = scraper.advanced_search(url)
-                await message.channel.send(f"```{movie_msg}```")
+    @tree.command(name="games", description="Gives list of top 5 currently popular games")
+    async def games(interaction: discord.Interaction):
+        try:
+            await interaction.response.defer(ephemeral=True)
+            url = urls['games']
+            games_msg = scraper.advanced_search(url)
+            await interaction.followup.send(f"```{games_msg}```")
+        except Exception as e:
+            print(e)
 
-        # Display a list of available commands if the user types ".help"
-        elif command == '.help':
-            commands_info = [
-                ".topmovies - Gives list of top 5 movies of all time",
-                ".movies - Gives list of top 5 currently popular movies",
-                ".series - Gives list of top 5 currently popular series",
-                ".games - Gives list of top 5 currently popular games",
-                ".title item_name(e.g. star wars) - Gives list of top 5 items regarding the title",
-                ".release item_year(e.g. 2024) - Gives list of top 5 items from given year"
-            ]
-            msg = f"Commands:-\n\n\n{'\n\n'.join(commands_info)}"
-            await message.channel.send(f"```{msg}```")
 
-        # Handle invalid commands by informing the user
-        else:
-            await message.channel.send(f"```Invalid Command! Use '.help' for a list of commands.```")
+    @tree.command(name="title", description="Gives list of top 5 items regarding the title")
+    @app_commands.describe(item_name="The title to search for")
+    async def title(interaction: discord.Interaction, item_name: str):
+        try:
+            await interaction.response.defer(ephemeral=True)
+            url = f"{urls['title']}{item_name}"
+            title_msg = scraper.advanced_search(url)
+            await interaction.followup.send(f"```{title_msg}```")
+        except Exception as e:
+            print(e)
+
+
+    @tree.command(name="release", description="Gives list of top 5 items from given year")
+    @app_commands.describe(item_year="The release year to search for")
+    async def release(interaction: discord.Interaction, item_year: int):
+        try:
+            await interaction.response.defer(ephemeral=True)
+            url = f"{urls['release']}{item_year}"
+            release_msg = scraper.advanced_search(url)
+            await interaction.followup.send(f"```{release_msg}```")
+        except Exception as e:
+            print(e)
+
+
+    @tree.command(name="help", description="Shows list of available commands")
+    async def help(interaction: discord.Interaction):
+        commands_info = [
+            "/topmovies - Gives list of top 5 movies of all time",
+            "/movies - Gives list of top 5 currently popular movies",
+            "/series - Gives list of top 5 currently popular series",
+            "/games - Gives list of top 5 currently popular games",
+            "/title item_name - Gives list of top 5 items regarding the title",
+            "/release item_year - Gives list of top 5 items from given year"
+        ]
+        msg = f"Commands:\n\n{'\n\n'.join(commands_info)}"
+        await interaction.response.send_message(f"```{msg}```")
 
     # Run the bot using the token from the .env file
     client.run(os.getenv('TOKEN'))
