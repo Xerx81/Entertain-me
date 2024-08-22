@@ -27,7 +27,7 @@ if __name__ == "__main__":
     scraper = Scraper()
 
     @client.event
-    async def on_ready():
+    async def on_ready() -> None:
         print(f'We have logged in as {client.user}')
         try:
             synced = await tree.sync()  # Sync all commands
@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
 
     @tree.command(name="topmovies", description="Gives list of top 5 movies of all time")
-    async def topmovies(interaction: discord.Interaction):
+    async def topmovies(interaction: discord.Interaction) -> None:
         try:
             await interaction.response.defer(ephemeral=True)
             url = urls['topmovies']
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
 
     @tree.command(name="movies", description="Gives list of top 5 currently popular movies")
-    async def movies(interaction: discord.Interaction):
+    async def movies(interaction: discord.Interaction) -> None:
         try:
             await interaction.response.defer(ephemeral=True)
             url = urls['movies']
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
 
     @tree.command(name="series", description="Gives list of top 5 currently popular series")
-    async def series(interaction: discord.Interaction):
+    async def series(interaction: discord.Interaction) -> None:
         try:
             await interaction.response.defer(ephemeral=True)
             url = urls['series']
@@ -78,7 +78,7 @@ if __name__ == "__main__":
 
 
     @tree.command(name="games", description="Gives list of top 5 currently popular games")
-    async def games(interaction: discord.Interaction):
+    async def games(interaction: discord.Interaction) -> None:
         try:
             await interaction.response.defer(ephemeral=True)
             url = urls['games']
@@ -93,7 +93,7 @@ if __name__ == "__main__":
 
     @tree.command(name="title", description="Gives list of top 5 items regarding the title")
     @app_commands.describe(item_name="The title to search for")
-    async def title(interaction: discord.Interaction, item_name: str):
+    async def title(interaction: discord.Interaction, item_name: str) -> None:
         try:
             await interaction.response.defer(ephemeral=True)
             url = f"{urls['title']}{item_name}"
@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
     @tree.command(name="release", description="Gives list of top 5 items from given year")
     @app_commands.describe(item_year="The release year to search for")
-    async def release(interaction: discord.Interaction, item_year: int):
+    async def release(interaction: discord.Interaction, item_year: int) -> None:
         try:
             await interaction.response.defer(ephemeral=True)
             url = f"{urls['release']}{item_year}"
@@ -122,7 +122,7 @@ if __name__ == "__main__":
 
 
     @tree.command(name="help", description="Shows list of available commands")
-    async def help(interaction: discord.Interaction):
+    async def help(interaction: discord.Interaction) -> None:
 
         # Dict for all commands and its function
         commands_info = {
