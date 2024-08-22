@@ -36,18 +36,13 @@ if __name__ == "__main__":
             print(e)
 
 
-    @tree.command()
-    async def hello(interaction: discord.Interaction):
-        await interaction.response.send_message(f'Hi, {interaction.user.mention}!')
-
-
     @tree.command(name="topmovies", description="Gives list of top 5 movies of all time")
     async def topmovies(interaction: discord.Interaction):
         try:
             await interaction.response.defer(ephemeral=True)
             url = urls['topmovies']
-            movie_msg = scraper.get_top_movies(url)
-            await interaction.followup.send(f"```{movie_msg}```")
+            movies_embed = scraper.get_top_movies(url)
+            await interaction.followup.send(embed=movies_embed)
         except Exception as e:
             print(e)
 
@@ -57,8 +52,13 @@ if __name__ == "__main__":
         try:
             await interaction.response.defer(ephemeral=True)
             url = urls['movies']
-            movie_msg = scraper.advanced_search(url)
-            await interaction.followup.send(f"```{movie_msg}```")
+
+            # title and description for the embed object
+            title = "Movies"
+            description = "These are top 5 currently popular movies"
+
+            movies_embed = scraper.advanced_search(url, title, description)
+            await interaction.followup.send(embed=movies_embed)
         except Exception as e:
             print(e)
 
@@ -68,8 +68,11 @@ if __name__ == "__main__":
         try:
             await interaction.response.defer(ephemeral=True)
             url = urls['series']
-            series_msg = scraper.advanced_search(url)
-            await interaction.followup.send(f"```{series_msg}```")
+            title = "Series"
+            description = "These are top 5 currently popular series"
+
+            series_embed = scraper.advanced_search(url, title, description)
+            await interaction.followup.send(embed=series_embed)
         except Exception as e:
             print(e)
 
@@ -79,8 +82,11 @@ if __name__ == "__main__":
         try:
             await interaction.response.defer(ephemeral=True)
             url = urls['games']
-            games_msg = scraper.advanced_search(url)
-            await interaction.followup.send(f"```{games_msg}```")
+            title = "Games"
+            description = "These are top 5 currently popular games"
+
+            games_embed = scraper.advanced_search(url, title, description)
+            await interaction.followup.send(embed=games_embed)
         except Exception as e:
             print(e)
 
@@ -91,8 +97,11 @@ if __name__ == "__main__":
         try:
             await interaction.response.defer(ephemeral=True)
             url = f"{urls['title']}{item_name}"
-            title_msg = scraper.advanced_search(url)
-            await interaction.followup.send(f"```{title_msg}```")
+            title = item_name.title()
+            description = f"These are top 5 currently popular items with '{title}' title"
+
+            title_embed = scraper.advanced_search(url, title, description)
+            await interaction.followup.send(embed=title_embed)
         except Exception as e:
             print(e)
 
@@ -103,24 +112,44 @@ if __name__ == "__main__":
         try:
             await interaction.response.defer(ephemeral=True)
             url = f"{urls['release']}{item_year}"
-            release_msg = scraper.advanced_search(url)
-            await interaction.followup.send(f"```{release_msg}```")
+            title = item_year
+            description = f"These are top 5 popular items of year {title}"
+
+            release_embed = scraper.advanced_search(url, title, description)
+            await interaction.followup.send(embed=release_embed)
         except Exception as e:
             print(e)
 
 
     @tree.command(name="help", description="Shows list of available commands")
     async def help(interaction: discord.Interaction):
-        commands_info = [
-            "/topmovies - Gives list of top 5 movies of all time",
-            "/movies - Gives list of top 5 currently popular movies",
-            "/series - Gives list of top 5 currently popular series",
-            "/games - Gives list of top 5 currently popular games",
-            "/title item_name - Gives list of top 5 items regarding the title",
-            "/release item_year - Gives list of top 5 items from given year"
-        ]
-        msg = f"Commands:\n\n{'\n\n'.join(commands_info)}"
-        await interaction.response.send_message(f"```{msg}```")
+
+        # Dict for all commands and its function
+        commands_info = {
+            "/topmovies": "Gives list of top 5 movies of all time",
+            "/movies": "Gives list of top 5 currently popular movies",
+            "/series": "Gives list of top 5 currently popular series",
+            "/games": "Gives list of top 5 currently popular games",
+            "/title item_name": "Gives list of top 5 items regarding the title",
+            "/release item_year": "Gives list of top 5 items from given year"
+        }
+        
+        embed = discord.Embed(
+            title="All Commands",
+            description="These are all the commands you can use to interact with the bot.",
+            color=discord.Color.gold()
+        )
+
+        try:
+            await interaction.response.defer(ephemeral=False)
+            for command, description in commands_info.items():
+                embed.add_field(name=command, value=description, inline=False)
+            embed.set_footer(text="www.imdb.com")
+            embed.set_thumbnail(url="https://static.amazon.jobs/teams/53/thumbnails/IMDb_Jobs_Header_Mobile.jpg?1501027253")
+
+            await interaction.followup.send(embed=embed)
+        except Exception as e:
+            print(e)
 
     # Run the bot using the token from the .env file
     client.run(os.getenv('TOKEN'))

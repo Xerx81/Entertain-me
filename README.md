@@ -25,13 +25,13 @@ This Python-based Discord bot fetches movie information from IMDb based on user 
 
 - Invite the bot to your Discord server.
 - Use the following commands:
-    - .topmovies: Fetches top 5 movies.
-    - .movies: Fetches top 5 currently popular movies.
-    - .series: Fetches top 5 currently popular series.
-    - .games: Fetches top 5 currently popular games.
-    - .title *movie_name*: Searches for a movie by title.
-    - .release *year*: Fetches top 5 movies released in the specified year.
-    - .help: Displays available commands.
+    - /topmovies: Fetches top 5 movies.
+    - /movies: Fetches top 5 currently popular movies.
+    - /series: Fetches top 5 currently popular series.
+    - /games: Fetches top 5 currently popular games.
+    - /title *movie_name*: Searches for a movie by title.
+    - /release *year*: Fetches top 5 movies released in the specified year.
+    - /help: Displays available commands.
 
 **Contributions:**
 

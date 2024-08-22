@@ -1,3 +1,4 @@
+import discord
 import requests
 from bs4 import BeautifulSoup
 
@@ -48,24 +49,39 @@ class Scraper:
         return movies
     
     # Converts the list of movie dictionaries into a formatted string
-    def dict_to_string(self, movies):
+    def dict_to_embed(self, movies, embed):
         if not movies:
-            return "No Results! Try again."
+            embed.add_field(name="No Results! Try again.", value="", inline=False)
+            return embed
         
-        return "\n".join(
-            f"{movie['title']}\n{movie['year']}  ⭐{movie['rating']}\n\n"
-            for movie in movies
-        ).strip()
+        for movie in movies:
+            title = movie['title']
+            info = f"{movie['year']}    ⭐{movie['rating']}"
+            embed.add_field(name=title, value=info, inline=False)
+            embed.set_footer(text="www.imdb.com")
+            embed.set_thumbnail(url="https://static.amazon.jobs/teams/53/thumbnails/IMDb_Jobs_Header_Mobile.jpg?1501027253")
+        
+        return embed
     
     # Fetches and returns the top movies from the provided URL
     def get_top_movies(self, url):
         soup = self.get_soup(url)
         year_tag = ("span", {"class": "sc-b189961a-8 hCbzGp cli-title-metadata-item"})  # Specific tag for year     
         movies = self.scrape(soup, self.common_list_tag, self.common_title_tag, self.common_rating_tag, year_tag)
-        return self.dict_to_string(movies)
+        embed = discord.Embed(
+            title="Top Movies",
+            description="These are all time top 5 movies on imdb based on rating.",
+            color=discord.Color.gold()
+        )
+        return self.dict_to_embed(movies, embed)
     
     # Performs an advanced search and returns the results
-    def advanced_search(self, url):
+    def advanced_search(self, url, title, description):
         soup = self.get_soup(url)
         movies = self.scrape(soup, self.common_list_tag, self.common_title_tag, self.common_rating_tag, self.common_year_tag)
-        return self.dict_to_string(movies)
+        embed = discord.Embed(
+            title=title,
+            description=description,
+            color=discord.Color.gold()
+        )
+        return self.dict_to_embed(movies, embed)
