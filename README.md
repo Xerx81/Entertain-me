@@ -44,4 +44,5 @@ Please follow the standard code style and formatting guidelines.
 
 **Screenshots:**
 
-![iMDb-bot-ss](https://github.com/user-attachments/assets/a4528684-c3a5-4fd5-a35d-e1f9bff3ee5d)
+![imdb_bot](https://github.com/user-attachments/assets/e2838952-f660-4bcc-b21d-61dacf0f4231)
+
